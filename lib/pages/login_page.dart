@@ -26,16 +26,16 @@ class _LoginPageState extends State<LoginPage> {
         body: Container(
           decoration: ConfigDatas.boxDecorationWithBackgroundGradient,
           child: ListView(
-            padding: EdgeInsets.only(top:0),
+            padding: EdgeInsets.only(top:MediaQuery.of(context).size.height*0.10),
             children: <Widget>[
               Container(
                 child: Image.asset(
-                  "assets/toplogin.png",
-                  width: MediaQuery.of(context).size.width,
+                  "assets/logo.png",
+                  height: MediaQuery.of(context).size.height*0.15,
                 ),
               ),
               SizedBox(
-                height:40,
+                height:MediaQuery.of(context).size.height*0.05,
                 child:Center(
                   child: Text(
                     errormsg['global'].toUpperCase(),
@@ -51,89 +51,100 @@ class _LoginPageState extends State<LoginPage> {
                 'Login',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Color.fromRGBO(27, 34, 50, 0.9),
+                  color: ConfigDatas.appWhiteColor,
                   fontWeight: FontWeight.bold,
                   fontSize: 40.0,
                 ),
               ),
-              SizedBox(height: 3),
-              Padding(
-                padding: EdgeInsets.all(10.0),
-                child: Column(
-                    children: <Widget>[
-                      CustomTextField(
-                          controller:emailctrl,
-                          hintText: 'Enter your email',
-                          errorMessage: errormsg['email'].toUpperCase(),
-                          obscureText: false,
-                          icon:Icon(Icons.email)
-                      ),
-                      CustomTextField(
-                          controller:passwordctrl,
-                          hintText: 'Enter your password',
-                          errorMessage: errormsg['password'].toUpperCase(),
-                          obscureText: true,
-                          icon:Icon(Icons.vpn_key)
-                      ),
-                      SizedBox(height: 10.0),
-                      SizedBox(
-                        width:MediaQuery.of(context).size.width*0.95,
-                        child: RaisedButton(
-                          color: Color.fromRGBO(27, 34, 50, 1),
-                          padding: EdgeInsets.all(20),
-                          child: Text(
-                            'Login',
-                            style: TextStyle(
-                                color: Color.fromRGBO(250, 218, 0, 1),
-                                fontSize: 25.0,
-                                fontWeight: FontWeight.bold
-                            ),
-                          ),
-                          onPressed: loginOperation,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)
-                          ),
+              SizedBox(height: MediaQuery.of(context).size.height*0.03),
+              Column(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width*0.75,
+                    child: CustomTextField(
+                      controller:emailctrl,
+                      label:'Email',
+                      hintText: 'Enter your email',
+                      errorMessage: errormsg['email'].toUpperCase(),
+                      obscureText: false,
+                    ),
+                  ),
+                  SizedBox(height:MediaQuery.of(context).size.height*0.03),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width*0.75,
+                    child: CustomTextField(
+                      controller:passwordctrl,
+                      label:'Password',
+                      hintText: 'Enter your password',
+                      errorMessage: errormsg['password'].toUpperCase(),
+                      obscureText: true,
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.width*0.12),
+                  SizedBox(
+                    width:MediaQuery.of(context).size.width*0.55,
+                    child: RaisedButton(
+                      color: ConfigDatas.loginFlowButtonColor,
+                      padding: EdgeInsets.all(20),
+                      child: Text(
+                        'Login',
+                        style: TextStyle(
+                            color: ConfigDatas.appWhiteColor,
+                            fontSize: 25.0,
+                            fontWeight: FontWeight.w900
                         ),
                       ),
-                      SizedBox(height: 30),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            FlatButton(
-                              child: Text(
-                                'Sign up',
-                                style: TextStyle(
-                                  fontWeight:FontWeight.bold,
-                                  fontSize: 17,
-                                ),
-                              ),
-                              onPressed: () {
-                                Navigator.of(context).pushNamed(
-                                  '/signup',
-                                );
-                              },
+                      onPressed: loginOperation,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.width*0.005),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        FlatButton(
+                          child: Text(
+                            'Sign up',
+                            style: TextStyle(
+                              color: ConfigDatas.appWhiteColor,
+                              fontWeight:FontWeight.bold,
+                              fontSize: 17,
                             ),
-                            Text(
-                                ' | '
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pushNamed(
+                              '/signup',
+                            );
+                          },
+                        ),
+                        Text(
+                          '|',
+                          style: TextStyle(
+                            color: ConfigDatas.appWhiteColor,
+                            fontWeight:FontWeight.bold,
+                            fontSize: 17,
+                          ),
+                        ),
+                        FlatButton(
+                          child: Text(
+                            'Forgot password',
+                            style: TextStyle(
+                              color: ConfigDatas.appWhiteColor,
+                              fontWeight:FontWeight.bold,
+                              fontSize: 17,
                             ),
-                            FlatButton(
-                              child: Text(
-                                'Forgot password',
-                                style: TextStyle(
-                                  fontWeight:FontWeight.bold,
-                                  fontSize: 17,
-                                ),
-                              ),
-                              onPressed: () {
-                                Navigator.of(context).pushNamed(
-                                    '/recoveryinfopage'
-                                );
-                              },
-                            )
-                          ]
-                      )
-                    ]
-                ),
+                          ),
+                          onPressed: () {
+                            // Navigator.of(context).pushNamed(
+                            //     '/recoveryinfopage'
+                            // );
+                          },
+                        )
+                      ]
+                  )
+                ],
               )
             ],
           ),
@@ -145,42 +156,45 @@ class _LoginPageState extends State<LoginPage> {
     errormsg['global']='';
     errormsg['email']='';
     errormsg['password']='';
-    try{
-      setActionPending(true);
-      String userData=jsonEncode(<String, String>{
-        'email':emailctrl.text,
-        'password':passwordctrl.text
-      });
-
-      final response = await http.post(
-        'http://10.0.2.2:3000/login',
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: userData,
-      );
-      setActionPending(false);
-      Map<String,dynamic> parsedbody=json.decode(response.body);
-      if(response.statusCode!=200)
-        setErrorMessages(parsedbody);
-      else
-        Navigator.of(context).pushNamed(
-            '/verificationcode',
-            arguments:{
-              'optype':'login',
-              'userData':parsedbody
-            }
-        );
-
-    }catch(e){
-      setState(() {
-        if(e.runtimeType.toString()=='SocketException')
-          errormsg['global']='Connection Problem!';
-        else
-          errormsg['global']='Problem Encounted!';
-        actionpending=false;
-      });
-    }
+    Navigator.of(context).pushNamed(
+      '/home',
+    );
+    // try{
+    //   setActionPending(true);
+    //   String userData=jsonEncode(<String, String>{
+    //     'email':emailctrl.text,
+    //     'password':passwordctrl.text
+    //   });
+    //
+    //   final response = await http.post(
+    //     'http://10.0.2.2:3000/login',
+    //     headers: <String, String>{
+    //       'Content-Type': 'application/json; charset=UTF-8',
+    //     },
+    //     body: userData,
+    //   );
+    //   setActionPending(false);
+    //   Map<String,dynamic> parsedbody=json.decode(response.body);
+    //   if(response.statusCode!=200)
+    //     setErrorMessages(parsedbody);
+    //   else
+    //     Navigator.of(context).pushNamed(
+    //         '/verificationcode',
+    //         arguments:{
+    //           'optype':'login',
+    //           'userData':parsedbody
+    //         }
+    //     );
+    //
+    // }catch(e){
+    //   setState(() {
+    //     if(e.runtimeType.toString()=='SocketException')
+    //       errormsg['global']='Connection Problem!';
+    //     else
+    //       errormsg['global']='Problem Encounted!';
+    //     actionpending=false;
+    //   });
+    // }
   }
 
   setActionPending(value){

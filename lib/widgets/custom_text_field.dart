@@ -1,16 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:funapp/configs/config_datas.dart';
 
 class CustomTextField extends StatelessWidget {
   // This widget is the root of your application.
 
   final TextEditingController controller;
   final String hintText;
+  final String label;
   final String errorMessage;
   final bool obscureText;
   final Icon icon;
 
-  CustomTextField({this.controller,this.hintText,this.errorMessage,this.obscureText,this.icon});
+  CustomTextField({this.label,this.controller,this.hintText,this.errorMessage,this.obscureText,this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -20,16 +22,29 @@ class CustomTextField extends StatelessWidget {
           children: <Widget>[
             Expanded(
               flex:1,
-              child: Container(
-                padding: EdgeInsets.only(top:3),
-                child: Text(
-                    errorMessage,
-                    textAlign: TextAlign.left,
-                    style:TextStyle(
-                      color:Colors.red,
-                      fontSize: 9,
+              child: Column(
+                children: [
+                  Text(
+                      label,
+                      textAlign: TextAlign.center,
+                      style:TextStyle(
+                        color:ConfigDatas.appWhiteColor,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold
+                      )
+                  ),
+                  errorMessage.isNotEmpty?
+                    Text(
+                        errorMessage,
+                        textAlign: TextAlign.center,
+                        style:TextStyle(
+                          color:Colors.red,
+                          fontSize: 15,
+                        )
                     )
-                ),
+                      :
+                    SizedBox(height: 8,)
+                ],
               ),
             )
           ],
@@ -37,25 +52,14 @@ class CustomTextField extends StatelessWidget {
         TextField(
           controller: controller,
           decoration: InputDecoration(
-
-            prefixIcon: Container(
-                padding: EdgeInsets.all(10),
-                margin: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                    borderRadius:BorderRadius.circular(10)
-                ),
-                child: icon
-            ),
-
             hintText: hintText,
             hintStyle: TextStyle(color: Colors.white54),
             border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide.none
             ),
-
             filled: true,
-            fillColor: Color.fromRGBO(27, 34, 50, 0.1),
+            fillColor: ConfigDatas.appWhiteColor
           ),
 
           obscureText: obscureText,

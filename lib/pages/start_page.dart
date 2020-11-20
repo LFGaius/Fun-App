@@ -24,7 +24,7 @@ class _StartPageState extends State<StartPage> {
   @override
   void initState(){
     super.initState();
-    Timer(Duration(seconds: 0),() {
+    Timer(Duration(seconds: 4),() {
       Jobs.getUserPreferences().then((SharedPreferences prefs) async{
           errormessage='';
           prefs.setBool('fun_already_opened',null);
