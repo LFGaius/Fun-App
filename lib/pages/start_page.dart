@@ -27,7 +27,6 @@ class _StartPageState extends State<StartPage> {
     Timer(Duration(seconds: 4),() {
       Jobs.getUserPreferences().then((SharedPreferences prefs) async{
           errormessage='';
-          prefs.setBool('fun_already_opened',null);
           if(prefs.getBool('fun_already_opened')==null){//first time connection
             SharedPreferences prefs=await SharedPreferences.getInstance();
             prefs.setBool('fun_already_opened',true);

@@ -86,6 +86,7 @@ class _LoginPageState extends State<LoginPage> {
                     child: RaisedButton(
                       color: ConfigDatas.loginFlowButtonColor,
                       padding: EdgeInsets.all(20),
+                      elevation: 5,
                       child: Text(
                         'Login',
                         style: TextStyle(

@@ -104,6 +104,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       child: RaisedButton(
                         color: ConfigDatas.loginFlowButtonColor,
                         padding: EdgeInsets.all(20),
+                        elevation: 5,
                         child: Text(
                           'Sign Up',
                           style: TextStyle(

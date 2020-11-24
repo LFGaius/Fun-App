@@ -33,6 +33,7 @@ dependencies:
   shared_preferences: ^0.5.7
   dots_indicator: ^1.0.0
   flutter_config: ^1.0.7
+  zefyr: ^0.12.0
 
 dev_dependencies:
   flutter_test:
@@ -54,6 +55,7 @@ flutter:
    - assets/logo.png
    - assets/onboardillust1.png
    - assets/onboardillust2.png
+   - assets/menuicon.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

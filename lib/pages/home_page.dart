@@ -3,30 +3,22 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:funapp/configs/config_datas.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
 
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  GlobalKey<ScaffoldState> scaffoldKey= new GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(250, 218, 0, 1),
-      appBar:AppBar(
-        elevation:25.0,
-        backgroundColor: Color.fromRGBO(27, 34, 50, 1),
-        // title: Text('home'),
-        iconTheme: IconThemeData(color: Color.fromRGBO(250, 218, 0, 1)),
-        // actions: <Widget>[
-        //   Padding(
-        //     padding: const EdgeInsets.only(right:8),
-        //     child: Image.asset(
-        //       "assets/pakle.jpg",
-        //       width: MediaQuery.of(context).size.height*0.15,
-
-        //     ),
-        //   ),
-        // ],
-      ),
+      key: scaffoldKey,
+      backgroundColor: ConfigDatas.appWhiteColor,
       drawer: Drawer(
         child: Container(
           color: Color.fromRGBO(250, 218, 0, 1),
@@ -182,105 +174,111 @@ class HomePage extends StatelessWidget {
       body: Column(
         children: <Widget>[
           Container(
-              height: MediaQuery.of(context).size.height*0.35,
-              decoration:BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage('assets/hometop.png'),
-                      fit: BoxFit.fill
-                  )
-              )
-          ),
-          Center(
-            child: Text(
-              'You want to ?',
-              style: TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                  color:Color.fromRGBO(27, 34, 50, 1)
+            decoration: ConfigDatas.boxDecorationWithBackgroundGradientAppBar,
+            height: MediaQuery.of(context).size.height*0.14,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 20,left: 10,right: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      scaffoldKey.currentState.openDrawer();
+                    },
+                    child: Image.asset(
+                      "assets/menuicon.png",
+                      height: MediaQuery.of(context).size.height*0.06,
+                    ),
+                  ),
+                  Image.asset(
+                    "assets/logo.png",
+                    height: MediaQuery.of(context).size.height*0.06,
+                  ),
+                ],
               ),
             ),
           ),
-          SizedBox(height: MediaQuery.of(context).size.height*0.05),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              CustomCard(
-                imagepath: 'assets/learn.png',
-                message: 'LEARN',
-              ),
-              CustomCard(
-                imagepath: 'assets/teach.png',
-                message: 'CREATE/EDIT',
-              )
-            ],
+          Container(
+            height: MediaQuery.of(context).size.height*0.86,
+            width: MediaQuery.of(context).size.width*0.75,
+            child: ListView.builder(
+              itemCount: 20,
+              itemBuilder: (context, position) {
+                return PublicationCard(
+                  title: 'title',
+                  message: 'messsage',
+                );
+              },
+            ),
           ),
+
         ],
       ),
     );
   }
 }
 
-class CustomCard extends StatelessWidget{
+class PublicationCard extends StatelessWidget{
 
-  final String imagepath;
+  final String title;
   final String message;
 
-  CustomCard({this.imagepath,this.message});
+  PublicationCard({this.title,this.message});
 
   @override
   Widget build(context){
-    return FlatButton(
-      child: Container(
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-                spreadRadius: 0.4,
-                offset: Offset(0,4),
-                color: Color.fromRGBO(27, 34, 50, 1)
-            )
-          ],
-          borderRadius: BorderRadius.circular(20),
-          color: Color.fromRGBO(27, 34, 50, 0.98),
-        ),
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      margin: EdgeInsets.only(bottom: 30.0),
+      color: ConfigDatas.publicationCardBackground,
+      elevation: 5,
+      child: Padding(
+        padding: EdgeInsets.only(top: 4.0,left: 20.0,right: 20.0,bottom: 15.0),
         child: Column(
-          children: <Widget>[
-            Container(
-              height: MediaQuery.of(context).size.height*0.24,
-              width: MediaQuery.of(context).size.width*0.40,
-              decoration: BoxDecoration(
-                color: Color.fromRGBO(250, 218, 0, 1),
-                image: DecorationImage(
-                  image: AssetImage(imagepath),
-                  fit: BoxFit.fill,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  '12/12/1231 12:32',
+                  style: TextStyle(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 15.0,
+                    color: ConfigDatas.publicationCardDateColor
+                  ),
                 ),
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20)),
+              ],
+            ),
+            SizedBox(height: 13),
+            Container(
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.only(top: 4.0,bottom: 15.0),
+              child: Text(
+                'Title',
+                style: TextStyle(
+                    fontWeight: FontWeight.w900,
+                    fontSize: 30.0,
+                    color: ConfigDatas.appWhiteColor
+                ),
               ),
             ),
             Container(
-                height: MediaQuery.of(context).size.height*0.09,
-                width: MediaQuery.of(context).size.width*0.40,
-                child:Center(
-                  child: Text(
-                    message,
-                    style: TextStyle(
-                        color: Color.fromRGBO(250, 218, 0, 1),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18
-                    ),
-                  ),
-                )
-            ),
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.only(top: 4.0,bottom: 15.0),
+              child: Text(
+                '  '+'Rzeqtteqzt etqzte gfdgdfg sgfsdg fgds Tgdgsdf jhji jhjlkh hgk kjgjh ukyhjkuyg HGkjkl df g h j k kjk j klj !',
+                style: TextStyle(
+                    fontWeight: FontWeight.w900,
+                    fontSize: 20.0,
+                    color: ConfigDatas.appWhiteColor
+                ),
+              ),
+            )
           ],
-        ),
+        )
       ),
-      onPressed: () {
-        switch(message){
-          case 'LEARN':
-            break;
-          case 'CREATE':
-            break;
-        }
-      },
     );
   }
 }
