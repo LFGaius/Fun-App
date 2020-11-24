@@ -21,7 +21,7 @@ class MyRouteBuilder{
         return MaterialPageRoute(builder: (_)=>SignUpPage());
       case '/home':
         return MaterialPageRoute(builder: (_)=>HomePage());
-      case '/create':
+      case '/createpublication':
         return MaterialPageRoute(builder: (_)=>NewPublicationPage());
       default: return errorRoute();
     }

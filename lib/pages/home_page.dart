@@ -214,6 +214,18 @@ class _HomePageState extends State<HomePage> {
 
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).pushNamed(
+            '/createpublication',
+          );
+        },
+        child: Icon(
+          Icons.add,
+          size: 30,
+        ),
+        backgroundColor: ConfigDatas.appGreenColor,
+      ),
     );
   }
 }
