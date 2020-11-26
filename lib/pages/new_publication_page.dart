@@ -1,5 +1,6 @@
 
 import 'dart:async';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -10,7 +11,11 @@ import 'dart:convert';
 import 'dart:io' as io;
 import 'package:file/file.dart';
 import 'package:file/local.dart';
+import 'package:keyboard_utils/keyboard_listener.dart';
+import 'package:keyboard_utils/keyboard_utils.dart';
+import 'package:quill_delta/quill_delta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zefyr/zefyr.dart';
 // import 'package:pakle/afri_spinner.dart';
 
 class NewPublicationPage extends StatefulWidget {
@@ -20,10 +25,6 @@ class NewPublicationPage extends StatefulWidget {
 }
 
 class _NewPublicationPageState extends State<NewPublicationPage> {
-
-  // @override
-  // void initState(){
-  // }
   GlobalKey<ScaffoldState> scaffoldKey= new GlobalKey<ScaffoldState>();
 
   @override
@@ -183,7 +184,7 @@ class _NewPublicationPageState extends State<NewPublicationPage> {
           ),
         ),
       ),
-      body: Column(
+      body: ListView(
         children: <Widget>[
           Container(
             decoration: ConfigDatas.boxDecorationWithBackgroundGradientAppBar,
@@ -211,28 +212,27 @@ class _NewPublicationPageState extends State<NewPublicationPage> {
             ),
           ),
           Container(
+            // decoration: BoxDecoration(
+            //   color: Color.fromRGBO(76, 131, 47, 0.9),
+            // ),
             alignment: Alignment.center,
-            height: MediaQuery.of(context).size.height*0.16,
+            height: MediaQuery.of(context).size.height*0.08,
             child: Text(
               'NEW PUBLICATION',
               style: TextStyle(
-                color: ConfigDatas.publicationCardDateColor,
-                fontSize: 30,
+                color: Color.fromRGBO(119, 204, 96, 0.9),
+                fontSize: 25,
                 fontWeight: FontWeight.w900
               ),
             ),
           ),
           Container(
-            height: MediaQuery.of(context).size.height*0.5,
-            width: MediaQuery.of(context).size.width*0.75,
-            child: PublicationEditorCard(
-                  title: 'title',
-                  message: 'Rzeqtteqzt etqzte gfdgdfg sgfsdg fgds Tgdgsdf jhji jhjlkh hgk kjgjh ukyhjkuyg HGkjkl df g h j k kjk j klj !',
-                )
+            height: MediaQuery.of(context).size.height*0.6,
+            child: PublicationEditorCard()
           ),
           Container(
             alignment: Alignment.center,
-            height: MediaQuery.of(context).size.height*0.2,
+            height: MediaQuery.of(context).size.height*0.14,
             child: SizedBox(
               width:MediaQuery.of(context).size.width*0.55,
               child: RaisedButton(
@@ -273,54 +273,91 @@ class _NewPublicationPageState extends State<NewPublicationPage> {
 
 }
 
-class PublicationEditorCard extends StatelessWidget{
+class PublicationEditorCard extends StatefulWidget{
 
-  final String title;
-  final String message;
+  @override
+  _PublicationEditorCardState createState() => _PublicationEditorCardState();
+}
 
-  PublicationEditorCard({this.title,this.message});
+class _PublicationEditorCardState extends State<PublicationEditorCard> {
+  ZefyrController _controller;
+  FocusNode _focusNode;
 
+  GlobalKey<ScaffoldState> scaffoldKey= new GlobalKey<ScaffoldState>();
+
+  double heightKeyBoard=0.0;
+  KeyboardUtils  _keyboardUtils = KeyboardUtils();
+
+  @override
+  void initState() {
+    super.initState();
+    var _idKeyboardListener = _keyboardUtils.add(
+        listener: KeyboardListener(willHideKeyboard: () {
+          print('height: 0');
+          setState(() {
+            heightKeyBoard=0.0;
+          });
+
+        }, willShowKeyboard: (double keyboardHeight) {
+          print('height: ${keyboardHeight}');
+          setState(() {
+            heightKeyBoard=keyboardHeight;
+          });
+
+        }));
+    final document=_loadDocument();
+    _controller=ZefyrController(document);
+    _focusNode=FocusNode();
+  }
+
+  NotusDocument _loadDocument(){
+    final Delta delta=Delta()..insert("Your text content here\n");
+    return NotusDocument.fromDelta(delta);
+  }
 
   @override
   Widget build(context){
     return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
-      ),
-      margin: EdgeInsets.only(bottom: 30.0),
-      color: ConfigDatas.publicationCardBackground,
-      elevation: 5,
-      child: Padding(
-          padding: EdgeInsets.only(top: 4.0,left: 20.0,right: 20.0,bottom: 15.0),
-          child: Column(
-            children: [
+      // shape: RoundedRectangleBorder(
+      //   borderRadius: BorderRadius.circular(15.0),
+      // ),
 
-              Container(
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.only(top: 20.0,bottom: 15.0),
-                child: Text(
-                  'title',
-                  style: TextStyle(
-                      fontWeight: FontWeight.w900,
-                      fontSize: 30.0,
-                      color: ConfigDatas.appWhiteColor
-                  ),
-                ),
-              ),
-              Container(
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.only(top: 4.0,bottom: 15.0),
-                child: Text(
-                  'hdfghdghfdh',
-                  style: TextStyle(
+      margin: EdgeInsets.all(0.0),
+      color: ConfigDatas.publicationCardBackground,
+      child: Scrollbar(
+        child: ListView(
+          children: [
+            Container(
+              padding: EdgeInsets.only(left:10,right:10),
+              margin: EdgeInsets.only(bottom:10),
+              child: TextField(
+                maxLines: null,
+                decoration: InputDecoration(
+                  hintText: 'Enter a title',
+                  hintStyle: TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 20.0,
-                      color: ConfigDatas.appWhiteColor
+                      color: Color.fromRGBO(255, 255, 255, 0.7)
                   ),
                 ),
+                style: TextStyle(
+                    fontWeight: FontWeight.w900,
+                    fontSize: 30.0,
+                    color: ConfigDatas.appWhiteColor
+                ),
+              ),
+            ),
+            Container(
+                height:heightKeyBoard==0.0?MediaQuery.of(context).size.height*0.5:MediaQuery.of(context).size.height*0.5-heightKeyBoard+MediaQuery.of(context).size.height*0.14,
+              child: ZefyrScaffold(
+                child: ZefyrEditor(
+                  controller: _controller,
+                  focusNode: _focusNode,
+                ),
               )
-            ],
-          )
+            )
+          ],
+        ),
       ),
     );
   }
