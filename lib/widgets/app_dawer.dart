@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:funapp/configs/config_datas.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -147,9 +148,8 @@ class AppDawer extends StatelessWidget {
               ),
               onTap: () async{
                 SharedPreferences prefs=await SharedPreferences.getInstance();
-                prefs.setString('fun_email',null);
-                prefs.setBool('fun_is_login',false);
-                exit(0);
+                await FirebaseAuth.instance.signOut();
+                Navigator.of(context).pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
               },
             ),
           ],
