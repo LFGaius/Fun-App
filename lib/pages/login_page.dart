@@ -1,4 +1,6 @@
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:funapp/configs/config_datas.dart';
@@ -19,6 +21,7 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController passwordctrl=new TextEditingController();
   Map<String,String> errormsg={'global':'','email':'','username':'','password':''};
   bool actionpending=false;
+
 
   @override
   Widget build(BuildContext context) {
@@ -154,13 +157,41 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  // final FirebaseAuth _firebaseAuth=FirebaseAuth.instance;
+
   loginOperation() async{
+
     errormsg['global']='';
     errormsg['email']='';
     errormsg['password']='';
-    Navigator.of(context).pushNamed(
-      '/home',
-    );
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: emailctrl.text,
+          password: passwordctrl.text
+      );
+    } on FirebaseAuthException catch (e) {
+      print(e.toString());
+      switch(e.code){
+        case 'user-not-found':setErrorMessages({
+          'globalError':'No user found for that email.'
+        });
+        break;
+        case 'wrong-password':setErrorMessages({
+          'password':'Wrong password provided for that user.'
+        });
+        break;
+        case 'invalid-email':setErrorMessages({
+          'email':'The email address is badly formatted.'
+        });
+        break;
+        default:setErrorMessages({
+          'globalError':e.message
+        });
+      }
+    }
+    // Navigator.of(context).pushNamed(
+    //   '/home',
+    // );
     // try{
     //   setActionPending(true);
     //   String userData=jsonEncode(<String, String>{
@@ -205,11 +236,11 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  setErrorMessages(parsedbody){
+  setErrorMessages(messageMap){
     setState(() {
-      errormsg['global']=parsedbody['globalError']!=null?parsedbody['globalError']['msg']:'';
-      errormsg['email']=parsedbody['email']!=null?parsedbody['email']['msg']:'';
-      errormsg['password']=parsedbody['password']!=null?parsedbody['password']['msg']:'';
+      errormsg['global']=messageMap['globalError']!=null?messageMap['globalError']:'';
+      errormsg['email']=messageMap['email']!=null?messageMap['email']:'';
+      errormsg['password']=messageMap['password']!=null?messageMap['password']:'';
     });
   }
 }

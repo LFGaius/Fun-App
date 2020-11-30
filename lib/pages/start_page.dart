@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:funapp/configs/config_datas.dart';
@@ -34,15 +35,14 @@ class _StartPageState extends State<StartPage> {
               '/onboarding',
             );
           }else{
-            if(prefs.getBool('fun_is_login')==null || prefs.getBool('fun_is_login')==false)
-              Navigator.of(context).popAndPushNamed(
-                '/login',
-              );
-            else{
-              Navigator.of(context).pushNamed(
-                  '/home'
-              );
-            }
+            FirebaseAuth.instance
+                .authStateChanges()
+                .listen((User user) {
+                  if (user == null) //Will remove all the previous routes to avoid route return
+                    Navigator.of(context).pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
+                  else
+                    Navigator.of(context).pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
+            });
           }
 
       });
