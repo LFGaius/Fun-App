@@ -1,4 +1,5 @@
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:funapp/configs/config_datas.dart';
@@ -17,8 +18,7 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
 
-  Map<String,String> errormsg={'global':'','email':'','username':'','password':''};
-  TextEditingController usernamectrl=new TextEditingController();
+  Map<String,String> errormsg={'global':'','email':'','password':''};
   TextEditingController emailctrl=new TextEditingController();
   TextEditingController passwordctrl=new TextEditingController();
   TextEditingController rpasswordctrl=new TextEditingController();
@@ -153,9 +153,46 @@ class _SignUpPageState extends State<SignUpPage> {
     errormsg['email']='';
     errormsg['username']='';
     errormsg['password']='';
-    Navigator.of(context).pushNamed(
-      '/home',
-    );
+
+    if(passwordctrl.text!=rpasswordctrl.text)
+      setErrorMessages({
+        'globalError':"Passwords don't match."
+      });
+    else
+      try {
+        UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            email: emailctrl.text,
+            password: passwordctrl.text
+        );
+      } on FirebaseAuthException catch (e) {
+      print(e);
+        switch(e.code) {
+          case 'weak-password':
+            setErrorMessages({
+              'password': "The password provided is too weak."
+            });
+            break;
+          case 'email-already-in-use':
+            setErrorMessages({
+              'email': "The account already exists for that email."
+            });
+            break;
+          case 'invalid-email':
+            setErrorMessages({
+              'email': e.message
+            });
+            break;
+          default:
+            setErrorMessages({
+              'globalError': e.message
+            });
+        }
+      } catch (e) {
+        print(e);
+      }
+    // Navigator.of(context).pushNamed(
+    //   '/home',
+    // );
     // try{
     //   setActionPending(true);
     //   String userData=jsonEncode(<String, String>{
@@ -207,12 +244,11 @@ class _SignUpPageState extends State<SignUpPage> {
     });
   }
 
-  setErrorMessages(parsedbody){
+  setErrorMessages(messageMap){
     setState(() {
-      errormsg['global']=parsedbody['globalError']!=null?parsedbody['globalError']['msg']:'';
-      errormsg['email']=parsedbody['email']!=null?parsedbody['email']['msg']:'';
-      errormsg['username']=parsedbody['username']!=null?parsedbody['username']['msg']:'';
-      errormsg['password']=parsedbody['password']!=null?parsedbody['password']['msg']:'';
+      errormsg['global']=messageMap['globalError']!=null?messageMap['globalError']:'';
+      errormsg['email']=messageMap['email']!=null?messageMap['email']:'';
+      errormsg['password']=messageMap['password']!=null?messageMap['password']:'';
     });
   }
 
