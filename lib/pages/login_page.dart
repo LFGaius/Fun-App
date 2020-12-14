@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:funapp/configs/config_datas.dart';
+import 'package:funapp/helpers/jobs.dart';
 import 'package:funapp/widgets/custom_text_field.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -169,6 +170,7 @@ class _LoginPageState extends State<LoginPage> {
           email: emailctrl.text,
           password: passwordctrl.text
       );
+      Navigator.of(context).pushReplacementNamed('/home');
     } on FirebaseAuthException catch (e) {
       print(e.toString());
       switch(e.code){

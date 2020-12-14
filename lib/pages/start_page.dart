@@ -34,14 +34,21 @@ class _StartPageState extends State<StartPage> {
             Navigator.of(context).popAndPushNamed(
               '/onboarding',
             );
-          }else{
+          }else{//TO DO:manage here shared preferences(Navigations will be handled on the trigger widgets)
+            if(prefs.getBool('fun_is_logged_in')==null || !prefs.getBool('fun_is_logged_in'))
+              Navigator.of(context).pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
+            else
+              Navigator.of(context).pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
+
             FirebaseAuth.instance
                 .authStateChanges()
-                .listen((User user) {
-                  if (user == null) //Will remove all the previous routes to avoid route return
-                    Navigator.of(context).pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
-                  else
-                    Navigator.of(context).pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
+                .listen((User user) async{
+                  SharedPreferences prefs=await SharedPreferences.getInstance();
+                  print('listened');
+                  if (user == null) {
+                    prefs.setBool('fun_is_logged_in', false);
+                  }else
+                    prefs.setBool('fun_is_logged_in',true);
             });
           }
 

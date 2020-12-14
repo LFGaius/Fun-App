@@ -7,7 +7,7 @@ import 'package:funapp/pages/sign_up_page.dart';
 import 'package:funapp/pages/start_page.dart';
 
 class MyRouteBuilder{
-  static Route<dynamic> buidRoute(RouteSettings settings){
+  static Route<dynamic> buildRoute(RouteSettings settings){
     final Map<String,dynamic> args=settings.arguments;
 
     switch(settings.name){

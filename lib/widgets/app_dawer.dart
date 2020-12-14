@@ -3,10 +3,12 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:funapp/configs/config_datas.dart';
+import 'package:funapp/pages/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppDawer extends StatelessWidget {
 
+  const AppDawer({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Drawer(

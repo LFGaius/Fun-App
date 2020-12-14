@@ -1,6 +1,7 @@
 
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:funapp/configs/config_datas.dart';
@@ -9,6 +10,10 @@ import 'package:funapp/widgets/publication_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
+  BuildContext get homePageContext {
+    return this.pageContext;
+  }
+  BuildContext pageContext;
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -18,6 +23,7 @@ class _HomePageState extends State<HomePage> {
   GlobalKey<ScaffoldState> scaffoldKey= new GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
+    widget.pageContext=context;//we store the context of this widget
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: ConfigDatas.appWhiteColor,
