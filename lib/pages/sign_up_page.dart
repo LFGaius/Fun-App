@@ -160,10 +160,15 @@ class _SignUpPageState extends State<SignUpPage> {
       });
     else
       try {
-        UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
             email: emailctrl.text,
             password: passwordctrl.text
         );
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: emailctrl.text,
+            password: passwordctrl.text
+        );
+        Navigator.of(context).pushReplacementNamed('/home');
       } on FirebaseAuthException catch (e) {
       print(e);
         switch(e.code) {
