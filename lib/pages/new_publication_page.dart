@@ -3,8 +3,11 @@ import 'dart:async';
 import 'dart:ffi';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:funapp/configs/config_datas.dart';
 import 'package:funapp/widgets/app_dawer.dart';
 import 'package:http/http.dart' as http;
@@ -27,6 +30,57 @@ class NewPublicationPage extends StatefulWidget {
 
 class _NewPublicationPageState extends State<NewPublicationPage> {
   GlobalKey<ScaffoldState> scaffoldKey= new GlobalKey<ScaffoldState>();
+  TextEditingController titlectrl=new TextEditingController();
+  ZefyrController bodyctrl;
+  var focusNode=FocusNode();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    final document=_loadDocument();
+    bodyctrl=ZefyrController(document);
+  }
+
+  NotusDocument _loadDocument(){
+    final Delta delta=Delta()..insert("Your text content here\n");
+    return NotusDocument.fromDelta(delta);
+  }
+
+  publish() async{
+    print('title:${titlectrl.text} body:${bodyctrl.document}');
+    CollectionReference publications = FirebaseFirestore.instance.collection('publications');
+    SharedPreferences prefs=await SharedPreferences.getInstance();
+    publications.add({
+      'creationDate': (new DateTime.now()).toUtc(), // John Doe
+      'title': titlectrl.text,
+      'body': jsonEncode(bodyctrl.document),
+      'ownerId': prefs.getString('fun_user_id')
+    })
+        .then((value)=>{
+          Fluttertoast.showToast(
+            msg: "Publication Created!",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+            fontSize: 16.0
+          ),
+          Navigator.of(context).pushReplacementNamed(
+          '/home',
+          )
+        })
+        .catchError((error) => Fluttertoast.showToast(
+            msg: "Failed to add publication: $error",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+            fontSize: 16.0
+        ));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +132,11 @@ class _NewPublicationPageState extends State<NewPublicationPage> {
           ),
           Container(
             height: MediaQuery.of(context).size.height*0.6,
-            child: PublicationEditorCard()
+            child: PublicationEditorCard(
+              bodyctrl:bodyctrl ,
+              titlectrl:titlectrl ,
+              focusNode:focusNode
+            )
           ),
           Container(
             alignment: Alignment.center,
@@ -97,7 +155,7 @@ class _NewPublicationPageState extends State<NewPublicationPage> {
                       fontWeight: FontWeight.w900
                   ),
                 ),
-                onPressed: () {},
+                onPressed: publish,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)
                 ),
@@ -121,17 +179,22 @@ class _NewPublicationPageState extends State<NewPublicationPage> {
     );
   }
 
+
+
 }
 
 class PublicationEditorCard extends StatefulWidget{
+  final TextEditingController titlectrl;
+  final ZefyrController bodyctrl;
+  final focusNode;
+
+  const PublicationEditorCard({Key key, this.titlectrl, this.bodyctrl, this.focusNode}) : super(key: key);
 
   @override
   _PublicationEditorCardState createState() => _PublicationEditorCardState();
 }
 
 class _PublicationEditorCardState extends State<PublicationEditorCard> {
-  ZefyrController _controller;
-  FocusNode _focusNode;
 
   GlobalKey<ScaffoldState> scaffoldKey= new GlobalKey<ScaffoldState>();
 
@@ -149,20 +212,12 @@ class _PublicationEditorCardState extends State<PublicationEditorCard> {
           });
 
         }, willShowKeyboard: (double keyboardHeight) {
-          print('height: ${keyboardHeight}');
           setState(() {
             heightKeyBoard=keyboardHeight;
           });
 
         }));
-    final document=_loadDocument();
-    _controller=ZefyrController(document);
-    _focusNode=FocusNode();
-  }
 
-  NotusDocument _loadDocument(){
-    final Delta delta=Delta()..insert("Your text content here\n");
-    return NotusDocument.fromDelta(delta);
   }
 
   @override
@@ -181,6 +236,7 @@ class _PublicationEditorCardState extends State<PublicationEditorCard> {
               padding: EdgeInsets.only(left:10,right:10),
               margin: EdgeInsets.only(bottom:10),
               child: TextField(
+                controller: widget.titlectrl,
                 maxLines: null,
                 decoration: InputDecoration(
                   hintText: 'Enter a title',
@@ -201,8 +257,8 @@ class _PublicationEditorCardState extends State<PublicationEditorCard> {
                 height:heightKeyBoard==0.0?MediaQuery.of(context).size.height*0.5:MediaQuery.of(context).size.height*0.5-heightKeyBoard+MediaQuery.of(context).size.height*0.14,
               child: ZefyrScaffold(
                 child: ZefyrEditor(
-                  controller: _controller,
-                  focusNode: _focusNode,
+                  controller: widget.bodyctrl,
+                  focusNode: widget.focusNode,
                 ),
               )
             )

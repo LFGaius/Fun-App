@@ -25,34 +25,28 @@ class _StartPageState extends State<StartPage> {
   @override
   void initState(){
     super.initState();
-    Timer(Duration(seconds: 4),() {
-      Jobs.getUserPreferences().then((SharedPreferences prefs) async{
-          errormessage='';
-          if(prefs.getBool('fun_already_opened')==null){//first time connection
-            SharedPreferences prefs=await SharedPreferences.getInstance();
-            prefs.setBool('fun_already_opened',true);
-            Navigator.of(context).popAndPushNamed(
-              '/onboarding',
-            );
-          }else{//TO DO:manage here shared preferences(Navigations will be handled on the trigger widgets)
-            if(prefs.getBool('fun_is_logged_in')==null || !prefs.getBool('fun_is_logged_in'))
-              Navigator.of(context).pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
-            else
-              Navigator.of(context).pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
-
-            FirebaseAuth.instance
-                .authStateChanges()
-                .listen((User user) async{
-                  SharedPreferences prefs=await SharedPreferences.getInstance();
-                  print('listened');
-                  if (user == null) {
-                    prefs.setBool('fun_is_logged_in', false);
-                  }else
-                    prefs.setBool('fun_is_logged_in',true);
-            });
-          }
-
-      });
+    Timer(Duration(seconds: 4),() async{
+      SharedPreferences prefs=await SharedPreferences.getInstance();
+      errormessage='';
+      if(prefs.getBool('fun_already_opened')==null){//first time connection
+        prefs.setBool('fun_already_opened',true);
+        Navigator.of(context).popAndPushNamed(
+          '/onboarding',
+        );
+      }else{//TO DO:manage here shared preferences(Navigations will be handled on the trigger widgets)
+        if(prefs.getString('fun_user_id')==null)
+          Navigator.of(context).pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
+        else
+          Navigator.of(context).pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
+        FirebaseAuth.instance
+            .authStateChanges()
+            .listen((User user) async{
+              SharedPreferences prefs=await SharedPreferences.getInstance();
+              if (user == null)
+                prefs.setString('fun_user_id', null);
+              else
+                prefs.setString('fun_user_id', user.uid);});
+      }
     });
   }
 

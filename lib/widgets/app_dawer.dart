@@ -149,7 +149,6 @@ class AppDawer extends StatelessWidget {
                 ),
               ),
               onTap: () async{
-                SharedPreferences prefs=await SharedPreferences.getInstance();
                 await FirebaseAuth.instance.signOut();
                 Navigator.of(context).pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
               },
