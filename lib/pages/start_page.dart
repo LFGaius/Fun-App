@@ -42,9 +42,10 @@ class _StartPageState extends State<StartPage> {
             .authStateChanges()
             .listen((User user) async{
               SharedPreferences prefs=await SharedPreferences.getInstance();
-              if (user == null)
+              if (user == null) {
+                print('(((((((disconnected------------');
                 prefs.setString('fun_user_id', null);
-              else
+              }else
                 prefs.setString('fun_user_id', user.uid);});
       }
     });
