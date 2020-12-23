@@ -98,6 +98,7 @@ class _HomePageState extends State<HomePage> {
                     // );
                         return PublicationEditorCard(
                                     readonly: true,
+                                    creationDate: document.data()['creationDate']!=null? DateTime.parse(document.data()['creationDate'].toDate().toString()).toLocal().toString().split('.')[0]:'--/--/-- --:--',
                                     bodyctrl:ZefyrController(_loadDocument(document.data()['body'])) ,
                                     titlectrl:TextEditingController(text:document.data()['title']),
                                     focusNode: FocusNode(),

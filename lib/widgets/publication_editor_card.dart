@@ -5,12 +5,13 @@ import 'package:keyboard_utils/keyboard_utils.dart';
 import 'package:zefyr/zefyr.dart';
 
 class PublicationEditorCard extends StatefulWidget{
+  final String creationDate;
   final TextEditingController titlectrl;
   final ZefyrController bodyctrl;
   final bool readonly;
   final focusNode;
 
-  const PublicationEditorCard({Key key, this.titlectrl, this.bodyctrl, this.focusNode, this.readonly}) : super(key: key);
+  const PublicationEditorCard({Key key, this.titlectrl, this.bodyctrl, this.focusNode, this.readonly, this.creationDate}) : super(key: key);
 
   @override
   _PublicationEditorCardState createState() => _PublicationEditorCardState();
@@ -60,7 +61,7 @@ class _PublicationEditorCardState extends State<PublicationEditorCard> {
                 Padding(
                   padding: const EdgeInsets.only(top:8.0,right:8.0),
                   child: Text(
-                    '12/12/1231 12:32',
+                    widget.creationDate,
                     style: TextStyle(
                         fontWeight: FontWeight.w900,
                         fontSize: 15.0,
