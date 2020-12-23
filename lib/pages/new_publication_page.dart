@@ -33,6 +33,8 @@ class _NewPublicationPageState extends State<NewPublicationPage> {
   GlobalKey<ScaffoldState> scaffoldKey= new GlobalKey<ScaffoldState>();
   TextEditingController titlectrl=new TextEditingController();
   ZefyrController bodyctrl;
+  KeyboardUtils _keyboardUtils = KeyboardUtils();
+  double heightKeyBoard = 0.0;
   var focusNode=FocusNode();
 
   @override
@@ -41,6 +43,18 @@ class _NewPublicationPageState extends State<NewPublicationPage> {
     super.initState();
     final document=_loadDocument();
     bodyctrl=ZefyrController(document);
+    var _idKeyboardListener = _keyboardUtils.add(
+        listener: KeyboardListener(willHideKeyboard: () {
+          setState(() {
+            print('height:   -------0');
+            heightKeyBoard = 0.0;
+          });
+        }, willShowKeyboard: (double keyboardHeight) {
+          setState(() {
+            print('height:   -------${keyboardHeight}');
+            heightKeyBoard = keyboardHeight;
+          });
+        }));
   }
 
   NotusDocument _loadDocument(){
@@ -116,51 +130,59 @@ class _NewPublicationPageState extends State<NewPublicationPage> {
               ),
             ),
           ),
-          Container(
-            // decoration: BoxDecoration(
-            //   color: Color.fromRGBO(76, 131, 47, 0.9),
-            // ),
-            alignment: Alignment.center,
-            height: MediaQuery.of(context).size.height*0.08,
-            child: Icon(
-              Icons.note_add,
-              size: MediaQuery.of(context).size.height*0.08,
-              color: ConfigDatas.appWhiteColor,
-            )
-          ),
-          Container(
-            height: MediaQuery.of(context).size.height*0.6,
-            child: PublicationEditorCard(
-              readonly: false,
-              bodyctrl:bodyctrl ,
-              titlectrl:titlectrl ,
-              focusNode:focusNode
-            )
-          ),
-          Container(
-            alignment: Alignment.center,
-            height: MediaQuery.of(context).size.height*0.14,
-            child: SizedBox(
-              width:MediaQuery.of(context).size.width*0.55,
-              child: RaisedButton(
-                color: ConfigDatas.appGreenColor,
-                padding: EdgeInsets.all(20),
-                elevation: 5,
-                child: Text(
-                  'PUBLISH',
-                  style: TextStyle(
+          Expanded(
+            child: ListView(
+              children: [
+                Container(
+                  // decoration: BoxDecoration(
+                  //   color: Color.fromRGBO(76, 131, 47, 0.9),
+                  // ),
+                    alignment: Alignment.center,
+                    height: MediaQuery.of(context).size.height*0.08,
+                    child: Icon(
+                      Icons.note_add,
+                      size: MediaQuery.of(context).size.height*0.08,
                       color: ConfigDatas.appWhiteColor,
-                      fontSize: 25.0,
-                      fontWeight: FontWeight.w900
+                    )
+                ),
+                Container(
+                    height: MediaQuery.of(context).size.height*0.6,
+                    child: PublicationEditorCard(
+                        heightKeyBoard: heightKeyBoard,
+                        readonly: false,
+                        bodyctrl:bodyctrl ,
+                        titlectrl:titlectrl ,
+                        focusNode:focusNode
+                    )
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  height: MediaQuery.of(context).size.height*0.14,
+                  child: SizedBox(
+                    width:MediaQuery.of(context).size.width*0.55,
+                    child: RaisedButton(
+                      color: ConfigDatas.appGreenColor,
+                      padding: EdgeInsets.all(20),
+                      elevation: 5,
+                      child: Text(
+                        'PUBLISH',
+                        style: TextStyle(
+                            color: ConfigDatas.appWhiteColor,
+                            fontSize: 25.0,
+                            fontWeight: FontWeight.w900
+                        ),
+                      ),
+                      onPressed: publish,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)
+                      ),
+                    ),
                   ),
                 ),
-                onPressed: publish,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)
-                ),
-              ),
+              ],
             ),
-          ),
+          )
+
         ],
       ),
       floatingActionButton: FloatingActionButton(

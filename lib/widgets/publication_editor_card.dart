@@ -8,10 +8,11 @@ class PublicationEditorCard extends StatefulWidget{
   final String creationDate;
   final TextEditingController titlectrl;
   final ZefyrController bodyctrl;
+  final heightKeyBoard;
   final bool readonly;
   final focusNode;
 
-  const PublicationEditorCard({Key key, this.titlectrl, this.bodyctrl, this.focusNode, this.readonly, this.creationDate}) : super(key: key);
+  const PublicationEditorCard({Key key, this.titlectrl, this.bodyctrl, this.focusNode, this.readonly, this.creationDate, this.heightKeyBoard}) : super(key: key);
 
   @override
   _PublicationEditorCardState createState() => _PublicationEditorCardState();
@@ -21,22 +22,10 @@ class _PublicationEditorCardState extends State<PublicationEditorCard> {
 
   GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  double heightKeyBoard = 0.0;
-  KeyboardUtils _keyboardUtils = KeyboardUtils();
 
   @override
   void initState() {
     super.initState();
-    var _idKeyboardListener = _keyboardUtils.add(
-        listener: KeyboardListener(willHideKeyboard: () {
-          setState(() {
-            heightKeyBoard = 0.0;
-          });
-        }, willShowKeyboard: (double keyboardHeight) {
-          setState(() {
-            heightKeyBoard = keyboardHeight;
-          });
-        }));
   }
 
   @override
@@ -101,7 +90,7 @@ class _PublicationEditorCardState extends State<PublicationEditorCard> {
                 height: widget.readonly?
                         widget.bodyctrl.document.length.toDouble()+50
                         :
-                        heightKeyBoard==0.0?MediaQuery.of(context).size.height*0.5:MediaQuery.of(context).size.height*0.5-heightKeyBoard+MediaQuery.of(context).size.height*0.14,
+                        widget.heightKeyBoard==0.0?MediaQuery.of(context).size.height*0.5 : MediaQuery.of(context).size.height*0.5-widget.heightKeyBoard+MediaQuery.of(context).size.height*0.14,
                 child: ZefyrScaffold(
 
                   child: ZefyrEditor(
