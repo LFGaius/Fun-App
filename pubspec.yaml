@@ -40,6 +40,7 @@ dependencies:
   firebase_auth: ^0.18.3+1
   cloud_firestore: ^0.14.3+1
   fluttertoast: ^7.1.5
+  flutter_reaction_button: ^1.0.6+1
 
 dev_dependencies:
   flutter_test:
@@ -62,6 +63,8 @@ flutter:
    - assets/onboardillust1.png
    - assets/onboardillust2.png
    - assets/menuicon.png
+   - assets/thumb_up.png
+   - assets/thumb_down.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

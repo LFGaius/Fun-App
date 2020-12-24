@@ -97,6 +97,7 @@ class _HomePageState extends State<HomePage> {
                     //   message: 'messsage',
                     // );
                         return PublicationEditorCard(
+                                    publicationId: document.id,
                                     readonly: true,
                                     creationDate: document.data()['creationDate']!=null? DateTime.parse(document.data()['creationDate'].toDate().toString()).toLocal().toString().split('.')[0]:'--/--/-- --:--',
                                     bodyctrl:ZefyrController(_loadDocument(document.data()['body'])) ,
