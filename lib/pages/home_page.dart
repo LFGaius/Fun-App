@@ -92,10 +92,16 @@ class _HomePageState extends State<HomePage> {
                   shrinkWrap: true,
                   children: snapshot.data.docs.map((
                       DocumentSnapshot document) {
+
                     // return PublicationCard(
                     //   title: 'title',
                     //   message: 'messsage',
                     // );
+                    // FirebaseFirestore.instance.collection('reactions')
+                    //     .where('publicationId', isEqualTo: document.id)
+                    //     .where('variant', isEqualTo: 'like')
+                    //     .get()
+                    //     .then(...)
                         return PublicationEditorCard(
                                     publicationId: document.id,
                                     readonly: true,
@@ -103,6 +109,8 @@ class _HomePageState extends State<HomePage> {
                                     bodyctrl:ZefyrController(_loadDocument(document.data()['body'])) ,
                                     titlectrl:TextEditingController(text:document.data()['title']),
                                     focusNode: FocusNode(),
+                                    likenumber: document.data()['likeNumber'],
+                                    unlikenumber: document.data()['unlikeNumber'],
                                 );
                       }).toList(),
                 );

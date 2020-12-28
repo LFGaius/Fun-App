@@ -4,11 +4,14 @@ import 'package:flutter_reaction_button/flutter_reaction_button.dart';
 import 'package:funapp/configs/config_datas.dart';
 import 'package:keyboard_utils/keyboard_listener.dart';
 import 'package:keyboard_utils/keyboard_utils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zefyr/zefyr.dart';
 
 import 'reaction_button.dart';
 
 class PublicationEditorCard extends StatefulWidget{
+  final int likenumber;
+  final int unlikenumber;
   final String publicationId;
   final String creationDate;
   final TextEditingController titlectrl;
@@ -17,7 +20,7 @@ class PublicationEditorCard extends StatefulWidget{
   final bool readonly;
   final focusNode;
 
-  const PublicationEditorCard({Key key, this.titlectrl, this.bodyctrl, this.focusNode, this.readonly, this.creationDate, this.heightKeyBoard, this.publicationId}) : super(key: key);
+  const PublicationEditorCard({Key key, this.titlectrl, this.bodyctrl, this.focusNode, this.readonly, this.creationDate, this.heightKeyBoard, this.publicationId, this.likenumber, this.unlikenumber}) : super(key: key);
 
   @override
   _PublicationEditorCardState createState() => _PublicationEditorCardState();
@@ -27,11 +30,28 @@ class _PublicationEditorCardState extends State<PublicationEditorCard> {
 
   GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   CollectionReference reactions;
+  bool thumbUpSelected=false;
+  bool thumbDownSelected=false;
 
+  checkReaction(variant) async{
+    SharedPreferences prefs=await SharedPreferences.getInstance();
+    CollectionReference reactions = FirebaseFirestore.instance.collection('reactions');
+    QuerySnapshot querySnapshot=await reactions.where('variant', isEqualTo: variant)
+        .where('ownerId', isEqualTo: prefs.getString('fun_user_id'))
+        .where('publicationId', isEqualTo: widget.publicationId).get();
+    if(mounted && (thumbUpSelected!=(querySnapshot.docs.length>0) || thumbDownSelected!=(querySnapshot.docs.length>0)))
+      setState(() {
+        if(variant=='like') thumbUpSelected=querySnapshot.docs.length>0;
+        if(variant=='unlike') thumbDownSelected=querySnapshot.docs.length>0;
+      });
+    // print('variant $variant thumbUpSelected $thumbUpSelected - thumbDownSelected $thumbDownSelected-- ${querySnapshot.docs.toString()}');
+  }
 
   @override
-  void initState() {
+  void initState(){
     super.initState();
+    print('-------init-------');
+
     // reactions = FirebaseFirestore.instance.collection('reactions').where('publicationId', isEqualTo:widget.publicationId);
     // StreamBuilder<QuerySnapshot>(
     //     stream: reactions.snapshots(),
@@ -42,8 +62,12 @@ class _PublicationEditorCardState extends State<PublicationEditorCard> {
     // );
   }
 
+
+
   @override
   Widget build(context) {
+    checkReaction('unlike');
+    checkReaction('like');
     return Column(
       children: [
         Card(
@@ -109,11 +133,9 @@ class _PublicationEditorCardState extends State<PublicationEditorCard> {
                             :
                             widget.heightKeyBoard==0.0?MediaQuery.of(context).size.height*0.5 : MediaQuery.of(context).size.height*0.5-widget.heightKeyBoard+MediaQuery.of(context).size.height*0.14,
                     child: ZefyrScaffold(
-
                       child: ZefyrEditor(
-
                         mode: widget.readonly? ZefyrMode.view:ZefyrMode.edit,
-                        autofocus: true,
+                        autofocus: !widget.readonly,
                         controller: widget.bodyctrl,
                         focusNode: widget.focusNode,
                       ),
@@ -128,15 +150,15 @@ class _PublicationEditorCardState extends State<PublicationEditorCard> {
           children: [
             ReactionButton(
               variant: 'like',
-              selected: true,
+              selected: thumbUpSelected,
               publicationId: widget.publicationId,
-              totalText:Text("0")
+              totalText:Text("${widget.likenumber}")
             ),
             ReactionButton(
               variant: 'unlike',
-              selected: false,
+              selected: thumbDownSelected,
               publicationId: widget.publicationId,
-              totalText:Text('10')
+              totalText:Text('${widget.unlikenumber}')
             )
           ],
         ),

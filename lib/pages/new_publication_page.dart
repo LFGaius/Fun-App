@@ -70,7 +70,9 @@ class _NewPublicationPageState extends State<NewPublicationPage> {
       'creationDate': (new DateTime.now()).toUtc(), // John Doe
       'title': titlectrl.text,
       'body': jsonEncode(bodyctrl.document),
-      'ownerId': prefs.getString('fun_user_id')
+      'ownerId': prefs.getString('fun_user_id'),
+      'likeNumber': 0,
+      'unlikeNumber': 0,
     })
         .then((value)=>{
           Fluttertoast.showToast(

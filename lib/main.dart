@@ -8,7 +8,7 @@ import 'package:funapp/routes/route_builder.dart';
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  FirebaseFirestore.instance.settings = Settings(persistenceEnabled: false);
+  FirebaseFirestore.instance.settings = Settings(persistenceEnabled: true);
   // try {
   //   UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
   //       email: "barry1.allen@example.com",
